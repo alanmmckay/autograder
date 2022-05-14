@@ -50,7 +50,7 @@ def rename_files(files, exemptChars, exemptFiles = [], path = os.getcwd()):
     return newFileNames
 
 
-def insert_try_block(name,source):
+def insert_try_import(name,source):
     tabSpace = '    '
     string = 'try:\n'
     string = string + tabSpace + 'from '+source+' import '+name+'\n'
@@ -59,7 +59,7 @@ def insert_try_block(name,source):
     return string
 
 
-def grade_submissions(testFunctions, path = os.getcwd(), shellScripts = 'files.sh', outputLog = 'output.txt', functionFile = '' , functions = [], libraryImports = [], testsFile = 'tests.py', exemptChars = [], exemptFiles = []):
+def grade_submissions(testFunctions, path = os.getcwd(), testsFile = 'tests.py', outputLog = 'output.txt', shellScripts = 'files.sh', exemptChars = [], exemptFiles = []):
     # !!! Make file renaming an option! Implicit by default empty lists for exemptions
 
     files = os.listdir(path)
@@ -88,13 +88,8 @@ def grade_submissions(testFunctions, path = os.getcwd(), shellScripts = 'files.s
         nameVar = file.split('.')[0]
         if file != shellScripts and file != outputLog and file != functionFile and file != testsFile:
             newData = 'name = "'+nameVar+'"\n'
-            for function in libraryImports:
-                newData = newData + function + '\n'
             for function in testFunctions:
-                newData = newData + insert_try_block(function,nameVar)
-            if functionFile:
-                for function in functions:
-                    newData = newData + insert_try_block(function,functionFile.split('.')[0])
+                newData = newData + insert_try_import(function,nameVar)
             newData = newData + 'print("'+file+'")\n'
             #newData = newData + 'try:\n'
             newData = newData + testData
@@ -112,8 +107,9 @@ def grade_submissions(testFunctions, path = os.getcwd(), shellScripts = 'files.s
     f.close()
 
     return True
-#grade_submissions(testFunctions, path = os.getcwd(), shellScripts = 'files.sh', outputLog = 'output.txt', functionFile = '' , functions = [], libraryImports = [], testsFile = 'tests.py', exemptChars = [], exemptFiles = []):
 
-grade_submissions(['manageWindows','newWeek'],os.getcwd(),'files.sh','output.txt','func.py', ['parseRecord'],['from datetime import datetime, timedelta'],'tests.py',['-',' ','(',')'],['tests.py','grade.py','files.sh','func.py','output.txt','__pycache__'])
+#def grade_submissions(testFunctions, path = os.getcwd(), testsFile = 'tests.py', outputLog = 'output.txt', shellScripts = 'files.sh', exemptChars = [], exemptFiles = []):
+
+grade_submissions(['manageWindows','newWeek'],os.getcwd(),'tests.py','files.sh','output.txt',['-',' ','(',')'],['tests.py','grade.py','files.sh','func.py','output.txt','__pycache__'])
 
 
